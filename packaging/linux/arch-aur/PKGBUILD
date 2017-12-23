@@ -43,7 +43,6 @@ build() {
   fi
 
   cd "${srcdir}/${_hkgname}-${_ver}"
-  wget "https://raw.githubusercontent.com/lettier/movie-monad/${_tree_hash}/makefile" -O "makefile"
   make cabal_install_relocatable_executable
 }
 
