@@ -1,5 +1,5 @@
 name: movie-monad
-version: '0.0.2.0'
+version: '0.0.3.0'
 summary: A free and simple to use video player built with Haskell.
 type: app
 description: |
@@ -35,7 +35,7 @@ apps:
 parts:
   movie-monad:
     source: https://github.com/lettier/movie-monad.git
-    source-tag: 0.0.2.0
+    source-tag: 0.0.3.0
     plugin: nil
     build-packages:
       - build-essential
@@ -52,7 +52,7 @@ parts:
       - gstreamer1.0-pulseaudio
       - gstreamer1.0-plugins-base
       - gstreamer1.0-plugins-good
-      - gstreamer1.0-plugins-bad 
+      - gstreamer1.0-plugins-bad
     prepare: |
       curl -sSL https://get.haskellstack.org/ | sh -s - -f
       make setup
@@ -65,4 +65,4 @@ parts:
       cp -R .cabal-sandbox/lib ../install/
       cp -R .cabal-sandbox/share ../install/
     after:
-      - desktop-gtk3 
+      - desktop-gtk3
