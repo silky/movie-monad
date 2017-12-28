@@ -1,5 +1,5 @@
 name: movie-monad
-version: '0.0.3.0'
+version: '0.0.4.0'
 summary: A free and simple to use video player built with Haskell.
 type: app
 description: |
@@ -35,7 +35,7 @@ apps:
 parts:
   movie-monad:
     source: https://github.com/lettier/movie-monad.git
-    source-tag: 0.0.3.0
+    source-tag: 0.0.4.0
     plugin: nil
     build-packages:
       - build-essential
