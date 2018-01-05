@@ -13,7 +13,7 @@ confinement: strict
 
 apps:
   movie-monad:
-    command: desktop-launch $SNAP/bin/movie-monad
+    command: desktop-launch $SNAP/usr/bin/movie-monad
     desktop: ../snap/gui/movie-monad.desktop
     plugs:
       - network
@@ -30,6 +30,7 @@ apps:
       - optical-drive
       - removable-media
       - raw-usb
+      - mount-observe
       - home
 
 parts:
@@ -40,8 +41,6 @@ parts:
     build-packages:
       - build-essential
     stage-packages:
-      - dbus-x11
-      - x11-xserver-utils
       - libcanberra-gtk-module
       - libgstreamer1.0-0
       - libgstreamer-plugins-base1.0-0
@@ -54,15 +53,28 @@ parts:
       - gstreamer1.0-plugins-good
       - gstreamer1.0-plugins-bad
     prepare: |
-      curl -sSL https://get.haskellstack.org/ | sh -s - -f
+      if [ ! `command -v stack` ]; then
+        curl -sSL https://get.haskellstack.org/ | sh -s - -f
+      fi
       make setup
-      make update
       make cabal_update
     build: |
       make cabal_install_relocatable_executable
     install: |
-      cp -R .cabal-sandbox/bin ../install/
-      cp -R .cabal-sandbox/lib ../install/
-      cp -R .cabal-sandbox/share ../install/
+      export _GHC_VERSION="8.0.2"
+      export _GHC_DIR="x86_64-linux-ghc-"$_GHC_VERSION
+      export _MOVIE_MONAD_VERSION_DIR=$SNAPCRAFT_PROJECT_NAME-$SNAPCRAFT_PROJECT_VERSION
+      export LD_LIBRARY_PATH=$SNAP/usr/lib/$_GHC_DIR
+      mkdir -p $SNAPCRAFT_PART_INSTALL/usr/bin \
+               $SNAPCRAFT_PART_INSTALL/usr/lib/$_GHC_DIR \
+               $SNAPCRAFT_PART_INSTALL/usr/share/$_GHC_DIR/$_MOVIE_MONAD_VERSION_DIR \
+               $SNAPCRAFT_PART_INSTALL/usr/share/doc/$SNAPCRAFT_PROJECT_NAME
+      cp .cabal-sandbox/bin/$SNAPCRAFT_PROJECT_NAME $SNAPCRAFT_PART_INSTALL/usr/bin/
+      find .cabal-sandbox/lib/$_GHC_DIR/ -type f -name '*.so' \
+        | xargs cp -t $SNAPCRAFT_PART_INSTALL/usr/lib/$_GHC_DIR/
+      cp -R .cabal-sandbox/share/$_GHC_DIR/$_MOVIE_MONAD_VERSION_DIR/. \
+            $SNAPCRAFT_PART_INSTALL/usr/share/$_GHC_DIR/$_MOVIE_MONAD_VERSION_DIR/
+      cp -R .cabal-sandbox/share/doc/$_GHC_VERSION_DIR/* \
+            $SNAPCRAFT_PART_INSTALL/usr/share/doc/$SNAPCRAFT_PROJECT_NAME/
     after:
       - desktop-gtk3
