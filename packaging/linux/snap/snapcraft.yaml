@@ -39,9 +39,14 @@ parts:
     source-tag: 0.0.4.0
     plugin: nil
     build-packages:
-      - build-essential
+      - libtinfo-dev
+      - libgstreamer1.0-dev
+      - libgstreamer-plugins-good1.0-dev
+      - libgstreamer-plugins-base1.0-dev
+      - libgstreamer-plugins-bad1.0-dev
+      - libgirepository1.0-dev
     stage-packages:
-      - libcanberra-gtk-module
+      - libgirepository-1.0-1
       - libgstreamer1.0-0
       - libgstreamer-plugins-base1.0-0
       - libgstreamer-plugins-good1.0-0
@@ -52,6 +57,8 @@ parts:
       - gstreamer1.0-plugins-base
       - gstreamer1.0-plugins-good
       - gstreamer1.0-plugins-bad
+    build-attributes:
+      - no-system-libraries
     prepare: |
       if [ ! `command -v stack` ]; then
         curl -sSL https://get.haskellstack.org/ | sh -s - -f
@@ -64,7 +71,7 @@ parts:
       export _GHC_VERSION="8.0.2"
       export _GHC_DIR="x86_64-linux-ghc-"$_GHC_VERSION
       export _MOVIE_MONAD_VERSION_DIR=$SNAPCRAFT_PROJECT_NAME-$SNAPCRAFT_PROJECT_VERSION
-      export LD_LIBRARY_PATH=$SNAP/usr/lib/$_GHC_DIR
+      export LD_LIBRARY_PATH=''
       mkdir -p $SNAPCRAFT_PART_INSTALL/usr/bin \
                $SNAPCRAFT_PART_INSTALL/usr/lib/$_GHC_DIR \
                $SNAPCRAFT_PART_INSTALL/usr/share/$_GHC_DIR/$_MOVIE_MONAD_VERSION_DIR \
@@ -76,5 +83,8 @@ parts:
             $SNAPCRAFT_PART_INSTALL/usr/share/$_GHC_DIR/$_MOVIE_MONAD_VERSION_DIR/
       cp -R .cabal-sandbox/share/doc/$_GHC_VERSION_DIR/* \
             $SNAPCRAFT_PART_INSTALL/usr/share/doc/$SNAPCRAFT_PROJECT_NAME/
+      rm -rf .cabal-sandbox
+    prime:
+      - -home/*
     after:
       - desktop-gtk3
