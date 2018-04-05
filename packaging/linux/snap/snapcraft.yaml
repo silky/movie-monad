@@ -1,13 +1,13 @@
 name: movie-monad
-version: '0.0.4.0'
-summary: A free and simple to use video player built with Haskell.
+version: '0.0.5.0'
+summary: A free and simple to use video player made with Haskell.
 type: app
 description: |
   Movie Monad is a free and simple to use video player.
-  You can play local files or files from the web.
+  You can play files on your computer or stream videos from the web.
   Movie Monad gets out of the way so you can watch the videos you love.
-  Try it today.
-icon: snap/gui/movie-monad.svg
+  Try it out.
+icon: snap/gui/movie-monad-icon.svg
 grade: stable
 confinement: strict
 
@@ -35,8 +35,8 @@ apps:
 
 parts:
   movie-monad:
-    source: https://github.com/lettier/movie-monad.git
-    source-tag: 0.0.4.0
+    source: .
+    source-tag: nil
     plugin: nil
     build-packages:
       - libtinfo-dev
@@ -60,30 +60,16 @@ parts:
     build-attributes:
       - no-system-libraries
     prepare: |
-      if [ ! `command -v stack` ]; then
-        curl -sSL https://get.haskellstack.org/ | sh -s - -f
-      fi
-      make setup
-      make cabal_update
     build: |
-      make cabal_install_relocatable_executable
     install: |
-      export _GHC_VERSION="8.0.2"
-      export _GHC_DIR="x86_64-linux-ghc-"$_GHC_VERSION
-      export _MOVIE_MONAD_VERSION_DIR=$SNAPCRAFT_PROJECT_NAME-$SNAPCRAFT_PROJECT_VERSION
       export LD_LIBRARY_PATH=''
-      mkdir -p $SNAPCRAFT_PART_INSTALL/usr/bin \
-               $SNAPCRAFT_PART_INSTALL/usr/lib/$_GHC_DIR \
-               $SNAPCRAFT_PART_INSTALL/usr/share/$_GHC_DIR/$_MOVIE_MONAD_VERSION_DIR \
-               $SNAPCRAFT_PART_INSTALL/usr/share/doc/$SNAPCRAFT_PROJECT_NAME
-      cp .cabal-sandbox/bin/$SNAPCRAFT_PROJECT_NAME $SNAPCRAFT_PART_INSTALL/usr/bin/
-      find .cabal-sandbox/lib/$_GHC_DIR/ -type f -name '*.so' \
-        | xargs cp -t $SNAPCRAFT_PART_INSTALL/usr/lib/$_GHC_DIR/
-      cp -R .cabal-sandbox/share/$_GHC_DIR/$_MOVIE_MONAD_VERSION_DIR/. \
-            $SNAPCRAFT_PART_INSTALL/usr/share/$_GHC_DIR/$_MOVIE_MONAD_VERSION_DIR/
-      cp -R .cabal-sandbox/share/doc/$_GHC_VERSION_DIR/* \
-            $SNAPCRAFT_PART_INSTALL/usr/share/doc/$SNAPCRAFT_PROJECT_NAME/
-      rm -rf .cabal-sandbox
+      export _MOVIE_MONAD_DOWNLOAD_DIR=$SNAPCRAFT_PROJECT_NAME-linux-$SNAPCRAFT_PROJECT_VERSION
+      export _MOVIE_MONAD_DOWNLOAD_FILE=$_MOVIE_MONAD_DOWNLOAD_DIR.tar.gz
+      wget https://github.com/lettier/$SNAPCRAFT_PROJECT_NAME/releases/download/$SNAPCRAFT_PROJECT_VERSION/$_MOVIE_MONAD_DOWNLOAD_FILE
+      tar -zxvf $_MOVIE_MONAD_DOWNLOAD_FILE
+      mkdir -p $SNAPCRAFT_PART_INSTALL/usr/
+      cd $_MOVIE_MONAD_DOWNLOAD_DIR/
+      cp -RP . $SNAPCRAFT_PART_INSTALL/usr/
     prime:
       - -home/*
     after:
