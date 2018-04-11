@@ -1,5 +1,5 @@
 name: movie-monad
-version: '0.0.5.0'
+version: '0.0.6.0'
 summary: A free and simple to use video player made with Haskell.
 type: app
 description: |

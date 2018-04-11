@@ -1,11 +1,11 @@
 # Maintainer: Lettier <movie_monad_aur a@@at@t lettier dd.ot..t ccommm>
 
 _name="movie-monad"
-_ver=0.0.5.0
-_xrev=0
+_ver="0.0.6.0"
+_xrev="0"
 
-pkgname=${_name}
-pkgver=${_ver}_${_xrev}
+pkgname="${_name}"
+pkgver="${_ver}_${_xrev}"
 pkgrel=1
 pkgdesc="A free and simple to use video player made with Haskell."
 url="https://github.com/lettier/${_name}"
